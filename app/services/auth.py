@@ -25,7 +25,7 @@ def get_player(name: str, password: str) -> Player | None:
             player_obj = Player(
                 player_no=player["player_no"],
                 name=player["name"],
-                defence_set_length=player["defence_set_length"]
+                defence_set_length=player["defence_set_length"],
             )
             return player_obj
 
@@ -33,7 +33,10 @@ def get_player(name: str, password: str) -> Player | None:
 
 
 def get_referee(username: str, password: str) -> Referee | None:
-    if username == referee_data["referee"]["username"] and password == referee_data["referee"]["password"]:
+    if (
+        username == referee_data["referee"]["username"]
+        and password == referee_data["referee"]["password"]
+    ):
         referee = Referee(username)
         return referee
 
@@ -60,18 +63,16 @@ def create_access_token(data: dict, expires_delta: timedelta = None):
         expire = datetime.now(timezone.utc) + expires_delta
 
     else:
-        expire = datetime.now(timezone.utc) + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+        expire = datetime.now(timezone.utc) + timedelta(
+            minutes=ACCESS_TOKEN_EXPIRE_MINUTES
+        )
 
     try:
         encoded_jwt = encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-        return {
-            "token": encoded_jwt,
-            "exp": expire
-        }
+        return {"token": encoded_jwt, "exp": expire}
 
     except PyJWTError as exception:
         raise exception
-
 
 
 def decode_token(token: str):

@@ -21,11 +21,13 @@ app.include_router(auth.router)
 app.include_router(referee.router)
 
 # Include player routes
-# app.include_router(player.router)
+app.include_router(player.router)
+
 
 @app.get("/health")
 async def root():
     return {"message": "I'm, alive!!!"}
+
 
 if __name__ == "__main__":
     uvicorn.run(app=app, host="0.0.0.0", port=4000)
