@@ -1,0 +1,52 @@
+{
+    "players": [
+      {
+        "player_no": 1,
+        "name": "Eliud",
+        "defence_set_length": 8,
+        "password": "player1password"
+      },
+      {
+        "player_no": 2,
+        "name": "Mo",
+        "defence_set_length": 8,
+        "password": "player2password"
+      },
+      {
+        "player_no": 3,
+        "name": "Mary",
+        "defence_set_length": 7,
+        "password": "player3password"
+      },
+      {
+        "player_no": 4,
+        "name": "Usain",
+        "defence_set_length": 7,
+        "password": "player4password"
+      },
+      {
+        "player_no": 5,
+        "name": "Paula",
+        "defence_set_length": 6,
+        "password": "player5password"
+      },
+      {
+        "player_no": 6,
+        "name": "Galen",
+        "defence_set_length": 6,
+        "password": "player6password"
+      },
+      {
+        "player_no": 7,
+        "name": "Shalane",
+        "defence_set_length": 5,
+        "password": "player7password"
+      },
+      {
+        "player_no": 8,
+        "name": "Halie",
+        "defence_set_length": 5,
+        "password": "player8password"
+      }
+    ]
+  }
