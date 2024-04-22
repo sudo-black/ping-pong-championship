@@ -21,12 +21,10 @@ class GameStatus(str, Enum):
 
 class Play:
     def __init__(
-        self,
-        offensive_num: int | None = None,
-        defensive_arr: List[int] | None = None
+        self, offensive_num: int | None = None, defensive_arr: List[int] | None = None
     ):
-        self.offensive_num: int = offensive_num
-        self.defensive_arr: List[int] = defensive_arr
+        self.offensive_num: int | None = offensive_num
+        self.defensive_arr: List[int] | None = defensive_arr
         self.result: bool | None = None
 
     def __condition_execute(self):
@@ -46,6 +44,9 @@ class Play:
             else:
                 self.result = False
 
+            self.offensive_num = None
+            self.defensive_arr = None
+
         else:
             self.result = None
 
@@ -53,12 +54,7 @@ class Play:
 
 
 class GameService:
-    def __init__(
-        self,
-        player1: Player,
-        player2: Player,
-        turn: Turn = Turn.PLAYER1
-    ):
+    def __init__(self, player1: Player, player2: Player, turn: Turn = Turn.PLAYER1):
         self.id: UUID = uuid4()
         self.player1: Player = player1
         self.player2: Player = player2
@@ -66,6 +62,8 @@ class GameService:
         self.score1: int = 0
         self.score2: int = 0
         self.play: Play = Play()
+        self.player1_joined: bool = False
+        self.player2_joined: bool = False
         self.status: GameStatus = GameStatus.WAITING
         self.winner: Player | None = None
         # self.stats: dict = {}
@@ -92,6 +90,37 @@ class GameService:
             self.turn = Turn.PLAYER1
 
         return self.turn
+
+    def __check_both_players_joined(self):
+        if self.player1_joined and self.player2_joined:
+            return True
+
+    def join_game_player1(self, player: Player):
+        if player == self.player1:
+            self.player1_joined = True
+            if self.__check_both_players_joined():
+                self.status = GameStatus.RUNNING
+
+    def join_game_player1(self, player: Player):
+        if player == self.player2:
+            self.player2_joined = True
+            if self.__check_both_players_joined():
+                self.status = GameStatus.RUNNING
+
+    def join_game(self, player: Player):
+        if player == self.player1:
+            self.player1_joined = True
+
+        elif player == self.player2:
+            self.player2_joined = True
+
+        else:
+            return False
+
+        if self.__check_both_players_joined():
+            self.status = GameStatus.RUNNING
+
+        return True
 
     def __create_defense_set(self, player):
         return set(randint(1, 10) for _ in range(player.defence_set_length))
@@ -179,9 +208,11 @@ class GameService:
     def execute_play(self):
         if self.__condition_execute_play():
             result = self.play.execute()
-            self.__update_score(result)
-            if self.status == GameStatus.WAITING:
-                self.status = GameStatus.RUNNING
+            if result:
+                self.__update_score(result)
+                if self.status == GameStatus.WAITING:
+                    self.status = GameStatus.RUNNING
+                    return True
 
         else:
             if self.status == GameStatus.RUNNING:
@@ -191,3 +222,5 @@ class GameService:
 
                 elif self.score1 < self.score2:
                     self.winner = self.player2
+
+        return False

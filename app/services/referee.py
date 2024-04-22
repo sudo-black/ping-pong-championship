@@ -1,14 +1,12 @@
 from services.championship import ChampionshipService
 from services.championship import championship_service
 
+from models import Referee
+
 
 class RefereeService:
     def __init__(self):
-        self.championship_service: ChampionshipService = championship_service
+        self.info = None
 
-
-    def start_championship(self):
-        status = self.championship_service.start_championship()
-        return status
 
 referee_service = RefereeService()
