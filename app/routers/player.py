@@ -5,13 +5,14 @@ from fastapi import APIRouter
 from fastapi import HTTPException
 from fastapi import Depends
 
-from pydantic import BaseModel
 
 from models import Player
 from models import Referee
 from models import ApiResponse
-from services.player import PlayerService
+
 from routers.auth import get_current_user
+from services.player import PlayerService
+
 
 router = APIRouter()
 
