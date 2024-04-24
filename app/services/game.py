@@ -128,7 +128,7 @@ class GameService:
     def get_offence(self) -> int | None:
         return self.play.offensive_num
 
-    def __condition_update_offence(self, num: int):
+    def __condition_update_offence(self, num: int) -> bool:
         if num >= 1 and num <= 10:
             return True
 
@@ -137,20 +137,23 @@ class GameService:
 
     def update_offence(self, num: int) -> int | None:
         if self.__condition_update_offence(num):
-            self.play.update
+            self.play.offensive_num = num
+            return True
 
-        return self.offence_num
+        else:
+            return False
 
     def get_defence(self) -> List[int] | None:
         return self.play.get_defensive_arr
 
-    def __check_integers_in_range(arr: List[int]):
+    def __check_integers_in_range(arr: List[int]) -> bool:
         return all(isinstance(num, int) and 1 <= num <= 10 for num in arr)
 
-    def __condition_update_defence(self, arr: List[int]):
+    def __condition_update_defence(self, arr: List[int]) -> bool:
         player = self.__get_defensive_player()
         if len(arr) == player.defence_set_length:
             if self.__check_integers_in_range(arr):
+                self.play.defensive_arr = arr
                 return True
 
             else:
@@ -159,7 +162,7 @@ class GameService:
         else:
             return False
 
-    def update_defence(self, arr: List[int] | None):
+    def update_defence(self, arr: List[int] | None) -> List[int] | None:
         if self.__condition_update_defence(arr):
             self.play.defensive_arr = arr
             return self.play.defensive_arr
@@ -167,14 +170,14 @@ class GameService:
         else:
             return None
 
-    def __condition_update_score(self):
+    def __condition_update_score(self) -> bool:
         if self.play.result is not None:
             return True
 
         else:
             return False
 
-    def __update_score(self, result: bool | None):
+    def __update_score(self, result: bool | None) -> bool | None:
         if self.__condition_update_score():
             match result:
                 case True:
@@ -198,14 +201,18 @@ class GameService:
         else:
             return None
 
-    def __condition_execute_play(self):
+    def __condition_execute_play(self) -> bool:
         if self.score1 <= 5 and self.score2 <= 5:
-            return True
+            if self.status == GameStatus.RUNNING:
+                return True
+
+            else:
+                return False
 
         else:
             return False
 
-    def execute_play(self):
+    def execute_play(self) -> bool:
         if self.__condition_execute_play():
             result = self.play.execute()
             if result:

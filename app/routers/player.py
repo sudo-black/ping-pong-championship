@@ -122,7 +122,7 @@ async def defensive_array(
     if (game.turn == Turn.PLAYER2 and current_user == game.player1) or (
         game.turn == Turn.PLAYER1 and current_user == game.player2
     ):
-        game.update_offence(body.defensive_array)
+        game.update_defence(body.arr)
 
     else:
         raise HTTPException(

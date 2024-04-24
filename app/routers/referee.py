@@ -1,6 +1,6 @@
 from uuid import UUID
+from typing import List
 from typing import Annotated
-from dataclasses import asdict
 
 from fastapi import APIRouter
 from fastapi import Depends
@@ -9,9 +9,8 @@ from fastapi import HTTPException
 from fastapi import Response
 
 from models import Referee
-from models import ApiResponse
-
 from routers.auth import get_current_user
+from services.game import GameService
 from services.referee import referee_service
 from services.championship import championship_service
 from services.championship import ChampionshipStatus
@@ -57,10 +56,10 @@ async def draw_games(
     referee: Annotated[Referee, Depends(get_current_user)], response: Response
 ):
     championship_status: ChampionshipStatus = championship_service.status
-    if championship_status == ChampionshipStatus.STARTED:
-        championship_service.draw_games()
+    games: List[GameService] | None = championship_service.draw_games()
+    if championship_status == ChampionshipStatus.STARTED and games:
         response.status_code = status.HTTP_200_OK
-        return championship_service.current_games
+        return games
 
     else:
         raise HTTPException(
@@ -71,10 +70,10 @@ async def draw_games(
 
 @router.post("referee/game/{id}/run")
 async def run_game(id: UUID):
-    game = championship_service.get_game_by_id(id)
+    game = championship_service.execute_play_by_id(id)
     result = game.execute_play()
     if result:
-        return game
+        return result
 
     else:
         raise HTTPException(
